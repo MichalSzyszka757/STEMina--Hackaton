@@ -1,0 +1,55 @@
+# Wersja składni pliku Docker Compose
+version: '3.8'
+
+# Definicja usług (kontenerów), które mają zostać uruchomione
+services:
+
+  # --- Usługa Bazy Danych (PostgreSQL) ---
+  db:
+    # Pobranie oficjalnego obrazu PostgreSQL w wersji 16
+    image: postgres:16
+    # Nazwa kontenera dla łatwiejszej identyfikacji
+    container_name: moja_baza_postgres
+    # Restartuj kontener zawsze, jeśli wystąpi błąd lub system wstanie
+    restart: always
+    # Zmienne środowiskowe konfigurujące bazę
+    environment:
+      # Ustawienie użytkownika bazy danych
+      POSTGRES_USER: user
+      # Ustawienie hasła do bazy danych
+      POSTGRES_PASSWORD: password
+      # Utworzenie domyślnej bazy danych
+      POSTGRES_DB: mydatabase
+    # Mapowanie portów (Host:Kontener)
+    ports:
+      # Udostępnij port 5432 na zewnątrz
+      - "5432:5432"
+    # Wolumeny do trwałego przechowywania danych
+    volumes:
+      # Zapisuj dane z kontenera w lokalnym wolumenie 'postgres_data'
+      - postgres_data:/var/lib/postgresql/data
+
+  # --- Usługa pgAdmin (Interfejs WWW) ---
+  pgadmin:
+    # Pobranie oficjalnego obrazu pgAdmin4
+    image: dpage/pgadmin4
+    # Nazwa kontenera pgAdmin
+    container_name: moj_pgadmin
+    # Zmienne środowiskowe do logowania do panelu pgAdmin
+    environment:
+      # Adres email do logowania
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      # Hasło do logowania do panelu
+      PGADMIN_DEFAULT_PASSWORD: root
+    # Mapowanie portów (Host:Kontener)
+    ports:
+      # Dostęp do panelu przez przeglądarkę na porcie 8080
+      - "8080:80"
+    # Zależność - pgAdmin uruchomi się po starcie bazy
+    depends_on:
+      - db
+
+# Definicja wolumenów
+volumes:
+  # Deklaracja wolumenu dla danych bazy (żeby nie zniknęły po restarcie)
+  postgres_data:

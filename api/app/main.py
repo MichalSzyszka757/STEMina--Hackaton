@@ -1,9 +1,29 @@
 import csv
 import random
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from faker import Faker
+
+from sqlalchemy.orm import Session
+# Import konfiguracji bazy i modeli
+from api.app.core.database import engine, get_db
+from api.app.models import models
+
+# Tworzenie tabel w bazie danych, jeśli nie istnieją
+# SQLAlchemy skanuje modele zaimportowane w 'models' i tworzy strukturę
+models.Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+@app.get("/health")
+def health_check(db: Session = Depends(get_db)):
+    """
+    Endpoint testowy. Sprawdza połączenie z bazą.
+    """
+    # Jeśli dependency zadziałało, baza jest połączona
+    return {"status": "ok", "db": "connected"}
+
 
 # Inicjalizacja polskiej lokalizacji
 fake = Faker('pl_PL')
