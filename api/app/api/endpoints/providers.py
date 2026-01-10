@@ -2,13 +2,23 @@ from fastapi import APIRouter, status
 from pydantic import BaseModel, EmailStr
 from uuid import UUID, uuid4
 from typing import List, Optional
+import random
+from faker import Faker
+
+# Inicjalizacja polskiej lokalizacji
+fake = Faker('pl_PL')
 
 # Modele dla Usługodawcy (Provider)
 class ProviderBase(BaseModel):
-    name: str
-    tax_id: str  # np. NIP
-    email: EmailStr
-    city: str
+    name: str = "Test test"
+    payment: int = 125
+    deadlines: int = 122
+    distance: int = 5
+    years_of_work: int = 123
+    owner: str = "dasasd"
+    description: str = "fsdadfafsggsfdfsgsrgf"
+    specializations: List[str]
+    rating: float
 
 class ProviderCreate(ProviderBase):
     pass
@@ -19,16 +29,30 @@ class ProviderUpdate(BaseModel):
     city: Optional[str] = None
 
 class Provider(ProviderBase):
-    id: UUID
+    id: UUID = uuid4()
     is_active: bool = True
 
-providers_db: List[Provider] = []
+categories = ["Barber", "Accountant", "Locksmith"]
+
+providers_db: List[Provider] = [
+    Provider(
+        id=uuid4(),
+        name=fake.company(),
+        specializations=categories[random.randint(0, len(categories)):random.randint(0, len(categories))],
+        payment=random.randint(0,2),
+        deadlines=random.randint(0, 30),
+        distance=random.randint(1, 50),
+        years_of_work=random.randint(1, 10),
+        owner=fake.name(),
+        rating=random.uniform(1, 5)
+    ) for _ in range(10)
+]
 
 # --- 3. ENDPOINTY - USŁUGODAWCY ---
 router = APIRouter()
 
 @router.get("/", response_model=List[Provider])
-def get_providers():
+def get_providers(category: str):
     return providers_db
 
 @router.post("/", response_model=Provider, status_code=status.HTTP_201_CREATED)

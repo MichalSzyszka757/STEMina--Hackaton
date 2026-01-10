@@ -3,17 +3,24 @@ from typing import List, Optional
 from uuid import UUID, uuid4
 from pydantic import BaseModel
 from enum import Enum
+from datetime import datetime
 
 class TaskStatus(str, Enum):
     OPEN = "OPEN"           # Czeka na wykonawcę
     ASSIGNED = "ASSIGNED"   # Wykonawca przypisany
     COMPLETED = "COMPLETED" # Zakończone
 
+class TaskBudget(str, Enum):
+    BUDGET = "BUDGET"
+    STANDARD = "STANDARD"
+
 class TaskBase(BaseModel):
-    title: str
     category: str        # np. "IT", "Hydraulik" - to musi pasować do usług providera
-    city: str
-    description: str
+    title: str
+    details: str
+    budget: TaskBudget
+    distance: int
+    deadline: datetime
 
 class TaskCreate(TaskBase):
     client_id: UUID      # Kto zleca

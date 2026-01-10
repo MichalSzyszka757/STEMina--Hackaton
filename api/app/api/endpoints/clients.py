@@ -13,6 +13,9 @@ class ClientBase(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
+    phone_number: str
+    address: str
+    profile_picture: str = None
 
 # class ClientCreate(ClientBase):
 #     provider_id: Optional[UUID] = None  # Opcjonalne przypisanie do usługodawcy
@@ -22,7 +25,14 @@ class Client(ClientBase):
     # provider_id: Optional[UUID] = None
 
 
-#clients_db: List[Client] = []
+clients_db: List[Client] = [
+    Client(
+        id=uuid4(),
+        first_name=fake.name().strip().split()[0],
+        last_name=fake.name().strip().split()[1],
+        email=fake.email(),
+        phone_number=fake.phone_number(),
+        address=fake.address()) for _ in range(20)]
 
 # --- 4. ENDPOINTY - USŁUGOBIORCY ---
 router = APIRouter()

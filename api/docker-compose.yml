@@ -44,7 +44,7 @@ services:
     # Mapowanie portów (Host:Kontener)
     ports:
       # Dostęp do panelu przez przeglądarkę na porcie 8080
-      - "8080:80"
+      - "8082:80"
     # Zależność - pgAdmin uruchomi się po starcie bazy
     depends_on:
       - db
