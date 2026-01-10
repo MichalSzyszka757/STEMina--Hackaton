@@ -1,0 +1,336 @@
+:root {
+    --primary-grad: linear-gradient(to right, #fd297b, #ff655b);
+    --gray-bg: #f3f3f3;
+    --white: #ffffff;
+    --text-color: #424242;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--gray-bg);
+    color: var(--text-color);
+    height: 100vh;
+    overflow: hidden; /* Zapobiega przewijaniu całej strony */
+}
+
+/* Landing Page */
+.landing-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--primary-grad);
+    color: white;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 300px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.btn-main {
+    background: var(--primary-grad);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    width: 100%;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 16px;
+    transition: transform 0.1s;
+}
+.btn-main:active { transform: scale(0.98); }
+
+/* Dashboard Layout */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Lewa Kolumna (Menu / Formularz / Kontakty) */
+.sidebar {
+    width: 350px;
+    background: white;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.sidebar-header {
+    height: 70px;
+    background: var(--primary-grad);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.sidebar-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Prawa Kolumna (Podgląd / Swiping / Chat) */
+.main-area {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f5f7fa;
+    position: relative;
+}
+
+/* Karty Tinderowe */
+.card-stack {
+    width: 380px;
+    height: 600px;
+    position: relative;
+}
+
+.tinder-card {
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-img {
+    height: 65%;
+    background-size: cover;
+    background-position: center;
+}
+
+.card-info {
+    padding: 20px;
+    flex: 1;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding-bottom: 20px;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    background: white;
+    transition: transform 0.2s;
+}
+.control-btn.nope { color: #ec5e6f; border: 2px solid #ec5e6f; }
+.control-btn.like { color: #42e098; border: 2px solid #42e098; }
+.control-btn:hover { transform: scale(1.1); }
+
+/* Match List */
+.match-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+.match-item:hover { background: #f9f9f9; }
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #ddd;
+    margin-right: 10px;
+    background-size: cover;
+}
+
+/* Chat */
+.chat-window {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.message {
+    background: white;
+    padding: 10px 15px;
+    border-radius: 15px;
+    margin: 5px 0;
+    max-width: 70%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.message.me {
+    align-self: flex-end;
+    background: #fd297b;
+    color: white;
+}
+
+
+/* Przycisk w sidebarze */
+.btn-outline {
+    background: transparent;
+    border: 2px solid #fd297b;
+    color: #fd297b;
+    padding: 10px 20px;
+    width: 100%;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.btn-outline:hover { background: #fd297b; color: white; }
+
+/* Placeholder Box (Start) */
+.placeholder-box {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: 350px;
+    height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: rgba(255,255,255,0.5);
+}
+.placeholder-box:hover {
+    border-color: #fd297b;
+    background: white;
+    transform: scale(1.02);
+}
+.placeholder-content { text-align: center; color: #777; padding: 20px; }
+
+/* Kontener edycji karty */
+.creation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Edytowalna karta */
+.editable-card {
+    position: relative; /* Reset position absolute z poprzedniego CSS */
+    width: 380px;
+    height: 550px; /* Nieco wyższa na formularz */
+    padding: 25px;
+    box-sizing: border-box;
+    display: block; /* Nadpisanie flex */
+}
+
+.card-scroll {
+    height: 100%;
+    overflow-y: auto; /* Scroll wewnątrz karty jeśli dużo opcji */
+    padding-right: 5px;
+}
+/* Ukryj scrollbar estetycznie */
+.card-scroll::-webkit-scrollbar { width: 5px; }
+.card-scroll::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+
+/* Pola formularza w stylu "Clean" */
+.input-clean, .input-title, .input-desc {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    font-family: inherit;
+    outline: none;
+    background: transparent;
+    transition: 0.3s;
+}
+.input-clean:focus, .input-title:focus, .input-desc:focus {
+    border-bottom-color: #fd297b;
+}
+
+.input-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+.input-desc {
+    resize: none;
+    height: 60px;
+    font-size: 14px;
+    color: #666;
+}
+
+.label-mini {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #999;
+    font-weight: bold;
+    margin-top: 15px;
+    display: block;
+}
+
+/* Suwaki (Sliders) */
+.slider-container { margin: 15px 0; }
+.slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 5px;
+    background: #e0e0e0;
+    outline: none;
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fd297b;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* Przycisk pod kartą */
+.big-btn {
+    width: 380px; /* Taka sama szerokość jak karta */
+    padding: 15px;
+    font-size: 18px;
+    box-shadow: 0 10px 20px rgba(253, 41, 123, 0.3);
+}
+
+.tag {
+    background: #eee;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    color: #555;
+    margin-right: 5px;
+}
+
+.empty-state { text-align: center; padding: 40px; }
