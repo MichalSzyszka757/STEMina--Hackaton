@@ -2,6 +2,10 @@ from fastapi import APIRouter, status
 from typing import List, Optional
 from uuid import UUID, uuid4
 from pydantic import BaseModel, EmailStr
+from faker import Faker
+
+# Inicjalizacja polskiej lokalizacji
+fake = Faker('pl_PL')
 
 # Modele dla Usługobiorcy (Client)
 class ClientBase(BaseModel):
@@ -9,33 +13,38 @@ class ClientBase(BaseModel):
     last_name: str
     email: EmailStr
 
-class ClientCreate(ClientBase):
-    provider_id: Optional[UUID] = None  # Opcjonalne przypisanie do usługodawcy
+# class ClientCreate(ClientBase):
+#     provider_id: Optional[UUID] = None  # Opcjonalne przypisanie do usługodawcy
 
 class Client(ClientBase):
     id: UUID
-    provider_id: Optional[UUID] = None
+    # provider_id: Optional[UUID] = None
 
 
-clients_db: List[Client] = []
+#clients_db: List[Client] = []
 
 # --- 4. ENDPOINTY - USŁUGOBIORCY ---
 router = APIRouter()
 
 @router.get("/", response_model=List[Client])
-def get_clients(provider_id: Optional[UUID] = None):
-    # Opcjonalne filtrowanie klientów po ID usługodawcy
-    if provider_id:
-        return [c for c in clients_db if c.provider_id == provider_id]
-    return clients_db
+def get_clients():
+    clients = []
+    for _ in range(20):
+
+        name = fake.name()
+        client = Client(id=uuid4(), first_name=name.strip().split()[0], last_name=name.strip().split()[1], email=fake.email())
+        #client.id = fake.random_int(min=1, max=1000)
+        #client.first_name = name.strip().split()[0]
+        #client.last_name = name.strip().split()[1]
+        #client.email = fake.email()
+
+        clients.append(client)
+
+    return clients
 
 @router.post("/", response_model=Client, status_code=status.HTTP_201_CREATED)
-def create_client(client: ClientCreate):
-    # (Opcjonalnie) Sprawdzenie czy usługodawca istnieje, jeśli podano ID
-    if client.provider_id:
-         if not any(p.id == client.provider_id for p in providers_db):
-             raise HTTPException(status_code=400, detail="Podany ID usługodawcy nie istnieje")
-
+def create_client(client: ClientBase):
+    
     new_client = Client(
         id=uuid4(),
         **client.dict()
