@@ -3,6 +3,7 @@ from typing import List, Optional
 from uuid import UUID, uuid4
 from pydantic import BaseModel, EmailStr
 from faker import Faker
+from enum import Enum
 
 # Inicjalizacja polskiej lokalizacji
 fake = Faker('pl_PL')
@@ -65,4 +66,30 @@ def delete_client(client_id: UUID):
     if not client:
         raise HTTPException(status_code=404, detail="Klient nie znaleziony")
     clients_db.remove(client)
+    return None
+
+
+@router.get("/{client_id}/candidates")
+def get_client_candidates(client_id: UUID):
+    """
+    Logika: Pobierz usługodawców pasujących do kryteriów klienta (np. miasto, branża) MINUS usługodawcy, z którymi klient ma już zapisaną interakcję (LIKE lub PASS).
+
+    Odpowiedź: Lista obiektów Provider.
+    """
+    return None
+
+class ClientInteractionType(str, Enum):
+    approve = "APPROVE"
+    reject = "REJECT"
+
+
+class ClientInteraction(BaseModel):
+    provider_id: UUID
+    type: ClientInteractionType
+
+@router.post("/{client_id}/interactions")
+def client_interact(client_id: UUID, interaction: ClientInteraction):
+    """
+    Każdy swipe to stworzenie nowego zasobu – "Interakcji" lub "Oceny".
+    """
     return None
