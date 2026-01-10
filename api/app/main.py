@@ -1,5 +1,8 @@
 import csv
 import random
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.router import api_router
 from faker import Faker
 
 # Inicjalizacja polskiej lokalizacji
@@ -49,21 +52,33 @@ def generuj_i_zapisz_do_csv(nazwa_pliku="klienci_krakow.csv", liczba_osob=10):
         print(f"Wystąpił błąd podczas zapisu pliku: {e}")
 
 
-from typing import Union
+app = FastAPI(
+    title="Providers and Clients API",
+    description="API do zarządzania usługodawcami i klientami",
+    version="1.0.0"
+)
 
-from fastapi import FastAPI
+# Lista dozwolonych źródeł
+origins = [
+    "http://localhost:5173",  # Adres, pod którym działa 'web'
+    "http://127.0.0.1:5173",
+]
 
-app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# Rejestracja routerów z prefiksem /api/v1
+app.include_router(api_router, prefix="/api/v1")
 
+# Endpoint startowy
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+def root():
+    return {"message": "Witaj w API! Dokumentacja dostępna pod /docs"}
 
 #if __name__ == "__main__":
 #    generuj_i_zapisz_do_csv()
