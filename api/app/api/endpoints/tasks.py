@@ -2,21 +2,34 @@ from fastapi import APIRouter, status
 from typing import List, Optional
 from uuid import UUID, uuid4
 from pydantic import BaseModel
+from enum import Enum
+
+class TaskStatus(str, Enum):
+    OPEN = "OPEN"           # Czeka na wykonawcę
+    ASSIGNED = "ASSIGNED"   # Wykonawca przypisany
+    COMPLETED = "COMPLETED" # Zakończone
 
 class TaskBase(BaseModel):
-    test_field: int
-    test_field2: int
+    title: str
+    category: str        # np. "IT", "Hydraulik" - to musi pasować do usług providera
+    city: str
+    description: str
+
+class TaskCreate(TaskBase):
+    client_id: UUID      # Kto zleca
 
 class Task(TaskBase):
     id: UUID
-    # provider_id: Optional[UUID] = None
+    client_id: UUID
+    provider_id: Optional[UUID] = None # Kto wykonuje (puste na początku)
+    status: TaskStatus = TaskStatus.OPEN
 
 router = APIRouter()
 
-@router.get("/")
-def get_tasks():
+# @router.get("/")
+# def get_tasks():
     
-    return [Task(id=uuid4(), test_field=1, test_field2=2), Task(id=uuid4(), test_field=2, test_field2=3)]
+#     return [Task(id=uuid4(), test_field=1, test_field2=2), Task(id=uuid4(), test_field=2, test_field2=3)]
 
 @router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
 def create_task(client: TaskBase):
@@ -41,4 +54,11 @@ def delete_task(task_id: UUID):
     # if not client:
     #     raise HTTPException(status_code=404, detail="Klient nie znaleziony")
     # clients_db.remove(client)
+    return None
+
+@router.post("/{task_id}/applications")
+def apply_for_task(task_id: UUID):
+    """
+    Provider zgłasza się, a Klient wybiera z listy chętnych.
+    """
     return None
