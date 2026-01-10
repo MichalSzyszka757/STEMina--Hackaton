@@ -39,19 +39,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[Client])
 def get_clients():
-    clients = []
-    for _ in range(20):
-
-        name = fake.name()
-        client = Client(id=uuid4(), first_name=name.strip().split()[0], last_name=name.strip().split()[1], email=fake.email())
-        #client.id = fake.random_int(min=1, max=1000)
-        #client.first_name = name.strip().split()[0]
-        #client.last_name = name.strip().split()[1]
-        #client.email = fake.email()
-
-        clients.append(client)
-
-    return clients
+    return clients_db
 
 @router.post("/", response_model=Client, status_code=status.HTTP_201_CREATED)
 def create_client(client: ClientBase):

@@ -2,6 +2,7 @@
 from app.core.database import Base
 from sqlalchemy import Boolean, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, Mapped, mapped_column
+from app.core.models import Category
 
 class Task(Base):
     """
@@ -13,6 +14,7 @@ class Task(Base):
     title: Mapped[str] = mapped_column(String, index=True)
     description: Mapped[str] = mapped_column(String, nullable=True)
     is_completed: Mapped[bool] = mapped_column(Boolean, default=False)
+    category: Mapped[Category] = mapped_column(Category, default=False)
 
     # Klucze obce
     client_id: Mapped[int] = mapped_column(Integer, ForeignKey("clients.id"))
