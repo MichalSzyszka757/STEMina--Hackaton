@@ -15,10 +15,10 @@ from app.models import Task
 
 # Tworzenie tabel w bazie danych, jeśli nie istnieją
 # SQLAlchemy skanuje modele zaimportowane w 'models' i tworzy strukturę
-#Base.metadata.create_all(bind=engine)
-#Client.metadata.create_all(bind=engine)
-#Task.metadata.create_all(bind=engine)
-#Provider.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
+Client.metadata.create_all(bind=engine)
+Task.metadata.create_all(bind=engine)
+Provider.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
