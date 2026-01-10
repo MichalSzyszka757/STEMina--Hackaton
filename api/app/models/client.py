@@ -1,3 +1,9 @@
+
+from sqlalchemy import Boolean, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship, Mapped, mapped_column
+
+from app.core.database import Base
+
 class Client(Base):
     """
     Model klienta zlecającego.
