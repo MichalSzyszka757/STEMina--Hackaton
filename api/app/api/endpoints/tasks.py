@@ -1,9 +1,12 @@
-from fastapi import APIRouter, status
-from typing import List, Optional
+from fastapi import APIRouter, Depends, status
+from typing import List, Optional, Annotated
 from uuid import UUID, uuid4
 from pydantic import BaseModel
 from enum import Enum
 from datetime import datetime
+
+from app.schemas.user import User
+from app.core.auth import get_current_user
 
 class TaskStatus(str, Enum):
     OPEN = "OPEN"           # Czeka na wykonawcę
@@ -37,16 +40,17 @@ router = APIRouter()
 # def get_tasks():
     
 #     return [Task(id=uuid4(), test_field=1, test_field2=2), Task(id=uuid4(), test_field=2, test_field2=3)]
+@router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
+def read_user_me(
+    task: TaskBase,
+    current_user: Annotated[User, Depends(get_current_user)]
+):
+    print(user)
+    return task
 
-@router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
-def create_task(client: TaskBase):
-    
-    # new_client = Client(
-    #     id=uuid4(),
-    #     **client.dict()
-    # )
-    # clients_db.append(new_client)
-    return Task(test_field=3, test_field2=4)
+#@router.post("/", response_model=Task, status_code=status.HTTP_201_CREATED)
+#def create_task(task: TaskBase):
+#    return task
 
 @router.get("/{task_id}", response_model=Task)
 def get_task(task_id: UUID):

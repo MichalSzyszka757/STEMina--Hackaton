@@ -1,9 +1,8 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from app.core.models import Category
-
-from api.app.core.database import Base
+from app.models.category import Category
+from app.core.database import Base
 
 # --- Tabela asocjacyjna ---
 task_applications = Table(
@@ -25,7 +24,7 @@ class Task(Base):
 
     # Pola zadania
     title: Mapped[str] = mapped_column(String, index=True)
-    category: Mapped[Category] = mapped_column(Category, default=False)
+    category: Mapped[Category] = relationship()
 
     details: Mapped[str] = mapped_column(String)
 

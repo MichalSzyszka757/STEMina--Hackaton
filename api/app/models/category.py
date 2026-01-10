@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 class Category(Base):
     """
-    Model zadania łączący klienta i dostawcę.
+    Model kategorii
     """
     __tablename__ = "category"
 

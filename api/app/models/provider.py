@@ -3,11 +3,11 @@ from sqlalchemy import Column, Integer, String, Float, Boolean
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from api.app.core.database import Base
+from app.core.database import Base
 # TERAZ IMPORTUJEMY Z TASK.PY
 # Uwaga: Upewnij się, że w task.py nie ma importu "from provider import Provider"
 # bo powstanie błędne koło (circular import).
-from api.app.models.task import task_applications
+from app.models.task import task_applications
 
 
 class Provider(Base):
