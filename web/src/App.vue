@@ -1,6 +1,6 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import './assets/style.css'
+import './assets/main.css'
 </script>
 
 <template>
