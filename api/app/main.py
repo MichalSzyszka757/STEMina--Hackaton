@@ -2,16 +2,23 @@ import csv
 import random
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.models import Client
+from app.models import Provider
 from app.api.router import api_router
 from faker import Faker
 
 from sqlalchemy.orm import Session
 # Import konfiguracji bazy i modeli
 from app.core.database import Base, engine, get_db
+from app.models import Task
 
 # Tworzenie tabel w bazie danych, jeśli nie istnieją
 # SQLAlchemy skanuje modele zaimportowane w 'models' i tworzy strukturę
 Base.metadata.create_all(bind=engine)
+Client.metadata.create_all(bind=engine)
+Task.metadata.create_all(bind=engine)
+Provider.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
