@@ -1,0 +1,47 @@
+<script setup>
+import { ref } from 'vue'
+
+const wiadomosc = ref('Czekam na dane z Pythona...')
+
+// Funkcja pobierająca dane
+const pobierzDane = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/')
+    const data = await response.json()
+    wiadomosc.value = data.message
+  } catch (error) {
+    wiadomosc.value = "Błąd! Czy Python jest włączony?"
+    console.error(error)
+  }
+}
+
+// Wywołaj od razu po wejściu na stronę
+pobierzDane()
+</script>
+
+<template>
+  <div class="kontener">
+    <h1>STEMina Hackathon</h1>
+    <p class="wynik">{{ wiadomosc }}</p>
+    <button @click="pobierzDane">Odśwież dane</button>
+  </div>
+</template>
+
+<style scoped>
+.kontener {
+  text-align: center;
+  margin-top: 50px;
+  font-family: Arial, sans-serif;
+}
+.wynik {
+  font-size: 24px;
+  color: #42b883; /* Kolor Vue */
+  font-weight: bold;
+  margin: 20px 0;
+}
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
