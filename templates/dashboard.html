@@ -1,0 +1,229 @@
+<!-- <!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>B2B Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-fire" style="margin-right: 10px;"></i> 
+                <span>Mój Profil / Zlecenia</span>
+            </div>
+            
+            <div class="sidebar-content">
+                <div v-if="viewState === 'create'">
+                    <h3>Nowe Zlecenie</h3>
+                    <p>Czego dzisiaj potrzebujesz?</p>
+                    <input type="text" v-model="newOrder.title" placeholder="Nazwa projektu (np. Strona WWW)">
+                    <textarea v-model="newOrder.desc" placeholder="Opis wymagań..." rows="4" style="width:100%; border:1px solid #ddd; border-radius:5px; padding:10px;"></textarea>
+                    <input type="text" v-model="newOrder.budget" placeholder="Budżet (np. 10k - 20k PLN)">
+                    
+                    <button class="btn-main" style="margin-top: 20px;" @click="startMatching">
+                        Znajdź Match <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+                </div>
+
+                <div v-else>
+                    <h3>Twoje Matche <span style="color: #fd297b;">([[ matches.length ]])</span></h3>
+                    <button @click="viewState = 'create'" style="background:none; border:none; color:#888; cursor:pointer; font-size:12px; margin-bottom:10px;">&larr; Wróć do zleceń</button>
+                    
+                    <div v-for="match in matches" :key="match.id" class="match-item" @click="openChat(match)">
+                        <div class="avatar" :style="{ backgroundImage: 'url(' + match.img + ')' }"></div>
+                        <div>
+                            <strong>[[ match.name ]]</strong><br>
+                            <small>[[ match.desc.substring(0, 20) ]]...</small>
+                        </div>
+                    </div>
+                    <div v-if="matches.length === 0" style="color: #999; text-align: center; margin-top: 20px;">
+                        Jeszcze brak par. Swipuj dalej!
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-area">
+            
+            <div v-if="viewState === 'create'" class="tinder-card" style="position: relative; width: 320px; height: 500px;">
+                <div style="background: #eee; height: 50%; display: flex; align-items: center; justify-content: center; color: #aaa;">
+                    Podgląd Twojej Karty
+                </div>
+                <div class="card-info">
+                    <h2>[[ newOrder.title || 'Nazwa Projektu' ]]</h2>
+                    <p>[[ newOrder.desc || 'Tutaj pojawi się opis Twojego zapotrzebowania, który zobaczą firmy.' ]]</p>
+                    <span style="background: #eee; padding: 5px 10px; border-radius: 15px; font-size: 12px;">[[ newOrder.budget || 'Budżet' ]]</span>
+                </div>
+            </div>
+
+            <div v-if="viewState === 'swiping'" class="card-stack">
+                <div v-if="candidates.length > 0">
+                    <div class="tinder-card">
+                        <div class="card-img" :style="{ backgroundImage: 'url(' + candidates[0].img + ')' }"></div>
+                        <div class="card-info">
+                            <h2>[[ candidates[0].name ]]</h2>
+                            <p>[[ candidates[0].desc ]]</p>
+                        </div>
+                        <div class="controls">
+                            <button class="control-btn nope" @click="swipe('left')"><i class="fa-solid fa-times"></i></button>
+                            <button class="control-btn like" @click="swipe('right')"><i class="fa-solid fa-heart"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div v-else style="text-align: center; color: #888;">
+                    <h3>To już wszyscy w tej kategorii!</h3>
+                    <p>Sprawdź swoje matche w lewej kolumnie.</p>
+                </div>
+            </div>
+
+            <div v-if="viewState === 'chat'" class="chat-window">
+                <div style="border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px;">
+                    Rozmowa z <strong>[[ activeChatUser.name ]]</strong>
+                    <button @click="viewState = 'swiping'" style="float: right; border:none; background:none; cursor:pointer;">X</button>
+                </div>
+                <div style="flex: 1; overflow-y: auto;">
+                    <div class="message">Cześć! Widziałem Twoje zlecenie "[[ newOrder.title ]]". Jesteśmy zainteresowani.</div>
+                    <div class="message me">Świetnie! Prześlijcie portfolio.</div>
+                    <div class="message">Już wysyłam...</div>
+                </div>
+                <div style="margin-top: 10px; display: flex;">
+                    <input type="text" placeholder="Napisz wiadomość..." style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px;">
+                    <button style="margin-left: 10px; border: none; background: #fd297b; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer;"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>B2B Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-layer-group" style="margin-right: 10px;"></i> 
+                <span>Twoje Zlecenia</span>
+            </div>
+            
+            <div class="sidebar-content">
+                <button class="btn-outline" @click="resetView">
+                    <i class="fa-solid fa-plus"></i> Nowe Zlecenie
+                </button>
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+                <div v-for="(order, index) in myOrders" :key="index" class="match-item">
+                    <div class="avatar" style="background: #fd297b; color: white; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-file-lines"></i>
+                    </div>
+                    <div>
+                        <strong>[[ order.title ]]</strong><br>
+                        <small>[[ order.category ]]</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-area">
+            
+            <div v-if="viewState === 'init'" class="placeholder-box" @click="viewState = 'create'">
+                <div class="placeholder-content">
+                    <i class="fa-solid fa-circle-plus" style="font-size: 50px; color: #fd297b; margin-bottom: 20px;"></i>
+                    <h2>Utwórz pierwsze zlecenie</h2>
+                    <p>Kliknij, aby zdefiniować potrzeby i znaleźć partnera B2B.</p>
+                </div>
+            </div>
+
+            <div v-if="viewState === 'create'" class="creation-container">
+                <div class="tinder-card editable-card">
+                    <div class="card-scroll">
+                        <label class="label-mini">KATEGORIA</label>
+                        <select v-model="newOrder.category" class="input-clean">
+                            <option value="IT">IT & Programowanie</option>
+                            <option value="Gastro">Gastronomia / Catering</option>
+                            <option value="Marketing">Marketing & Social Media</option>
+                            <option value="Budowlanka">Budownictwo / Remonty</option>
+                        </select>
+
+                        <input type="text" v-model="newOrder.title" class="input-title" placeholder="Jaki typ usługi potrzebny? (np. Tort Urodzinowy)">
+                        
+                        <textarea v-model="newOrder.desc" class="input-desc" placeholder="Szczegóły poprawnego wykonania zadania..."></textarea>
+
+                        <div class="form-row">
+                            <div>
+                                <label class="label-mini">TERMIN WYKONANIA</label>
+                                <input type="date" v-model="newOrder.deadline" class="input-clean">
+                            </div>
+                            <div style="display: flex; align-items: center;">
+                                <input type="checkbox" id="delivery" v-model="newOrder.delivery" style="width: auto; margin-right: 10px;">
+                                <label for="delivery" style="font-size: 14px; color: #555;">Dostawa dostępna</label>
+                            </div>
+                        </div>
+
+                        <div class="slider-container">
+                            <label class="label-mini">BUDŻET (PLN): <strong>[[ newOrder.budget ]] zł</strong></label>
+                            <input type="range" v-model="newOrder.budget" min="100" max="50000" step="100" class="slider">
+                        </div>
+
+                        <div class="slider-container">
+                            <label class="label-mini">ZASIĘG USŁUGI: <strong>[[ newOrder.range ]] km</strong></label>
+                            <input type="range" v-model="newOrder.range" min="0" max="100" class="slider">
+                        </div>
+
+                        <label class="label-mini">WYMAGANA DOSTĘPNOŚĆ</label>
+                        <select v-model="newOrder.availability" class="input-clean">
+                            <option>Od zaraz</option>
+                            <option>W ciągu tygodnia</option>
+                            <option>Do uzgodnienia</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn-main big-btn" @click="saveAndMatch">
+                    Znajdź Match <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </div>
+
+            <div v-if="viewState === 'swiping'" class="card-stack">
+                <div v-if="candidates.length > 0" class="tinder-card">
+                    <div class="card-img" :style="{ backgroundImage: 'url(' + candidates[0].img + ')' }"></div>
+                    <div class="card-info">
+                        <h2>[[ candidates[0].name ]]</h2>
+                        <p>[[ candidates[0].desc ]]</p>
+                        <div style="margin-top: 10px;">
+                            <span class="tag">[[ newOrder.category ]]</span>
+                            <span class="tag">[[ newOrder.range ]] km od Ciebie</span>
+                        </div>
+                    </div>
+                    <div class="controls">
+                        <button class="control-btn nope" @click="swipe('left')"><i class="fa-solid fa-times"></i></button>
+                        <button class="control-btn like" @click="swipe('right')"><i class="fa-solid fa-heart"></i></button>
+                    </div>
+                </div>
+                <div v-else class="empty-state">
+                    <h3>To wszyscy w kategorii [[ newOrder.category ]]!</h3>
+                    <button class="btn-outline" @click="resetView">Wróć do edycji</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
