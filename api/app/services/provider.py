@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from api.app.models.provider import Provider
+from app.models.provider import Provider
 
 
 def create_provider(

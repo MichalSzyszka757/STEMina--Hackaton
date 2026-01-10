@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
-from api.app.models.task import Task
+from app.models.task import Task
 
 
 def create_task(
