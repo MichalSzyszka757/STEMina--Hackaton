@@ -1,8 +1,8 @@
 # Eksport schematów klienta
-from .create_client import ClientCreate, ClientResponse, ClientBase
+from .client import ClientCreate, ClientResponse
 
 # Eksport schematów dostawcy
-from .create_provider import ProviderCreate, ProviderResponse, ProviderBase
+from .provider import ProviderCreate, ProviderResponse
 
 # Schematy taska
-from .create_task import CreateTask, TaskResponse
+from .task import CreateTask, TaskResponse

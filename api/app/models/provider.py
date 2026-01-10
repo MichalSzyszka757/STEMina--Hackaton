@@ -8,16 +8,13 @@ from app.core.database import Base
 # Uwaga: Upewnij się, że w task.py nie ma importu "from provider import Provider"
 # bo powstanie błędne koło (circular import).
 from app.models.task import task_applications
+from app.models.user import User, UserRole
 
 
-class Provider(Base):
+class Provider(User):
     """
     Model dostawcy usług (wykonawcy).
     """
-    __tablename__ = "providers"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-
     name: Mapped[str] = mapped_column(String, index=True)
     payment: Mapped[int] = mapped_column(Integer)
     deadlines: Mapped[int] = mapped_column(Integer)
@@ -40,3 +37,6 @@ class Provider(Base):
         back_populates="candidates"
     )
 
+    __mapper_args__ = {
+        "polymorphic_identity": UserRole.PROVIDER
+    }

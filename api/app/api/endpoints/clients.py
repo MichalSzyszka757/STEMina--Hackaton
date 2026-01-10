@@ -49,6 +49,9 @@ def create_client(client: ClientBase):
         **client.dict()
     )
     clients_db.append(new_client)
+
+    create_user()
+
     return new_client
 
 @router.get("/{client_id}", response_model=Client)

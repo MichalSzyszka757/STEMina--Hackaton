@@ -1,10 +1,15 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-class ProviderBase(BaseModel):
+from app.schemas.user import UserBase
+
+class ProviderCreate(UserBase):
     """
-    Bazowy schemat dostawcy ze wspólnymi polami.
+    Schemat używany do tworzenia dostawcy (POST).
+    Rating i is_active są opcjonalne (mają domyślne wartości).
     """
+    rating: Optional[float] = 0.0
+    is_active: Optional[bool] = True
     name: str
     payment: int
     deadlines: int  # Np. wskaźnik terminowości
@@ -14,15 +19,7 @@ class ProviderBase(BaseModel):
     description: str
     specializations: List[str]  # Lista stringów, np. ["Hydraulik", "Elektryk"]
 
-class ProviderCreate(ProviderBase):
-    """
-    Schemat używany do tworzenia dostawcy (POST).
-    Rating i is_active są opcjonalne (mają domyślne wartości).
-    """
-    rating: Optional[float] = 0.0
-    is_active: Optional[bool] = True
-
-class ProviderResponse(ProviderBase):
+class ProviderResponse(UserBase):
     """
     Schemat zwracany przez API (odczyt).
     """
