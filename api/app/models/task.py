@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Table
 from sqlalchemy.orm import relationship, Mapped, mapped_column
 
-from api.app.core.database import Base
+from app.core.database import Base
 
 # --- Tabela asocjacyjna ---
 task_applications = Table(

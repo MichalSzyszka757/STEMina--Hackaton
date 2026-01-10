@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-from api.app.core.database import Base
+from app.core.database import Base
 
 
 class Client(Base):
