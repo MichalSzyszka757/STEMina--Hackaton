@@ -25,7 +25,7 @@ class Provider(ProviderBase):
 providers_db: List[Provider] = []
 
 # --- 3. ENDPOINTY - USŁUGODAWCY ---
-router = APIRouter(prefix="/providers", tags=["Providers"])
+router = APIRouter()
 
 @router.get("/", response_model=List[Provider])
 def get_providers():
@@ -71,3 +71,13 @@ def delete_provider(provider_id: UUID):
         raise HTTPException(status_code=404, detail="Usługodawca nie znaleziony")
     providers_db.remove(provider)
     return None
+
+@router.get("/{provider_id}/opportunities")
+def provider_opportunities():
+    """
+    Logika: Backend sprawdza: "Jakie specjalizacje ma ten provider?" -> "Znajdź wolne zadania w tych kategoriach".
+
+    To jest Twój "feed" dla wykonawcy.
+    """
+    return None
+
