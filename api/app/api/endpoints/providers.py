@@ -25,7 +25,7 @@ class Provider(ProviderBase):
 providers_db: List[Provider] = []
 
 # --- 3. ENDPOINTY - USŁUGODAWCY ---
-router = APIRouter(prefix="/providers", tags=["Providers"])
+router = APIRouter()
 
 @router.get("/", response_model=List[Provider])
 def get_providers():
