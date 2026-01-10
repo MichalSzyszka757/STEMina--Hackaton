@@ -7,12 +7,11 @@ from faker import Faker
 
 from sqlalchemy.orm import Session
 # Import konfiguracji bazy i modeli
-from api.app.core.database import engine, get_db
-from api.app.models import models
+from app.core.database import Base, engine, get_db
 
 # Tworzenie tabel w bazie danych, jeśli nie istnieją
 # SQLAlchemy skanuje modele zaimportowane w 'models' i tworzy strukturę
-models.Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
