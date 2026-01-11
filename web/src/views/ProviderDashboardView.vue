@@ -2,7 +2,7 @@
 import { ref, reactive } from 'vue'
 
 // 1. IMPORT DANYCH Z PLIKU (To musi być ta ścieżka do wygenerowanego pliku)
-import { providerTasks as tasks } from '@/data/providerData.js'
+import { providerTasks as tasks } from '@/data/taskData.js'
 
 // --- STATE ---
 const isEditingProfile = ref(false)
@@ -10,16 +10,16 @@ const viewState = ref('init') // 'init', 'edit_offer', 'swiping', 'chat'
 const currentJobStack = ref([]) // Zlecenia przefiltrowane do przeglądania
 const myMatches = ref([])       // Zaakceptowane
 const activeChatPartner = ref(null)
-const swipeAnimation = ref('') 
+const swipeAnimation = ref('')
 
 // Profil Firmy
 const providerProfile = reactive({
     name: 'Moja Firma Budowlana',
     email: 'biuro@firma1.pl',
     avatar: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=80',
-    
+
     // --- WAŻNE: To musi pasować do nazw z generatora Python ---
-    category: 'Budowlana', 
+    category: 'Budowlana',
     years: 5,
     priceLevel: 1, // 1 = Standard
     range: 50,     // Dajmy większy zasięg na start
@@ -38,10 +38,10 @@ const searchForJobs = () => {
 
         return categoryMatch && rangeMatch && dateMatch;
     });
-    
+
     // Mieszamy wyniki i przypisujemy
     currentJobStack.value = filtered.sort(() => Math.random() - 0.5);
-    
+
     // Przełącz widok
     viewState.value = 'swiping'
 }
@@ -73,7 +73,7 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
 
 <template>
   <div class="app-container">
-    
+
     <div class="sidebar">
       <div class="user-profile-section">
           <div class="profile-header">
@@ -81,14 +81,14 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
               <div class="profile-info">
                   <h3 v-if="!isEditingProfile">{{ providerProfile.name }}</h3>
                   <input v-else v-model="providerProfile.name" class="input-clean" style="font-weight:bold;">
-                  
+
                   <p v-if="!isEditingProfile">{{ providerProfile.category }} | {{ providerProfile.years }} lat</p>
                   <button class="btn-small" @click="isEditingProfile = !isEditingProfile">
                     {{ isEditingProfile ? 'Zapisz Profil' : 'Edytuj Profil' }}
                   </button>
               </div>
           </div>
-          
+
           <div v-if="isEditingProfile" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
               <label class="label-mini">Kategoria</label>
               <select v-model="providerProfile.category" class="input-clean">
@@ -102,10 +102,10 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
                   <option>Motoryzacyjna</option>
                   <option>Ogrody i Tereny Zielone</option>
               </select>
-              
+
               <label class="label-mini">Lata na rynku</label>
               <input type="number" v-model="providerProfile.years" class="input-clean">
-              
+
               <label class="label-mini">Poziom Cen (Min.)</label>
               <select v-model="providerProfile.priceLevel" class="input-clean">
                   <option :value="0">Budget ($)</option>
@@ -118,7 +118,7 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
       <div class="sidebar-header" style="height: 50px; font-size: 16px;">
         <span>Moje Zlecenia</span>
       </div>
-      
+
       <div class="sidebar-content">
         <div v-for="job in myMatches" :key="job.id" class="match-item" @click="openChat(job)">
              <div class="match-avatar" style="font-size:12px;">{{ job.id }}</div>
@@ -132,7 +132,7 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
     </div>
 
     <div class="main-area">
-      
+
       <div v-if="viewState === 'init'" class="placeholder-box" @click="viewState = 'edit_offer'">
           <div style="font-size: 50px; color: #fd297b;">🛠️</div>
           <h2>Znajdź Zlecenia</h2>
@@ -142,10 +142,10 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
       <div v-if="viewState === 'edit_offer'" class="tinder-card editable-card">
           <h2>Twoja Oferta</h2>
           <p>Doprecyzuj, jakich zleceń szukasz dzisiaj.</p>
-          
+
           <label class="label-mini">Szukam zleceń dostępnych OD:</label>
           <input type="date" v-model="providerProfile.availableFrom" class="input-clean">
-          
+
           <label class="label-mini">Maksymalny Dojazd (km)</label>
           <input type="range" v-model="providerProfile.range" min="0" max="100" class="single-slider">
           <div style="text-align:right; font-size:12px; color:#888;">{{ providerProfile.range }} km</div>
@@ -156,15 +156,15 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
       </div>
 
       <div v-if="viewState === 'swiping'" style="display:flex; flex-direction: column; align-items: center;">
-          <div v-if="currentJobStack.length > 0" 
-               class="tinder-card candidate-card" 
+          <div v-if="currentJobStack.length > 0"
+               class="tinder-card candidate-card"
                :class="swipeAnimation"
                :style="{ backgroundImage: `url(${currentJobStack[0].img})` }">
-              
+
               <div class="card-overlay">
                   <h2>{{ currentJobStack[0].title }}</h2>
                   <p>{{ currentJobStack[0].desc }}</p>
-                  
+
                   <div style="display:flex; gap:10px; margin-top:10px;">
                       <span class="info-pill">📅 {{ currentJobStack[0].date }}</span>
                       <span class="info-pill price-pill">{{ getBudgetSign(currentJobStack[0].budgetLevel) }}</span>
@@ -172,13 +172,13 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
                   </div>
               </div>
           </div>
-          
+
           <div v-else class="tinder-card" style="justify-content:center; align-items:center; color:#999; padding: 20px; text-align:center;">
               <h2>Brak pasujących zleceń 😔</h2>
               <p>Spróbuj zwiększyć zasięg (km), zmienić datę lub kategorię.</p>
               <button class="btn-outline" @click="viewState='edit_offer'">Zmień kryteria</button>
           </div>
-          
+
           <div v-if="currentJobStack.length > 0" style="display:flex; gap:20px; margin-top:20px;">
               <button class="btn-control nope" @click="swipe('left')">✖</button>
               <button class="btn-control like" @click="swipe('right')">❤</button>
@@ -234,19 +234,19 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
 }
 
 .chat-avatar-small {
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    background-size: cover; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
     background-position: center;
     margin-right: 15px;
     border: 1px solid #eee;
 }
 
 .chat-close-btn {
-    border: none; 
-    background: none; 
-    font-size: 20px; 
+    border: none;
+    background: none;
+    font-size: 20px;
     cursor: pointer;
     color: #999;
 }

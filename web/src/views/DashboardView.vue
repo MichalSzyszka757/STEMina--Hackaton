@@ -1,19 +1,19 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
-import { allCandidates, budgetLabels } from '../data/mockData.js'
+import { allCandidates, budgetLabels } from '../data/providerData.js'
 
 // --- KONFIGURACJA I STAN ---
 const isEditingProfile = ref(false)
 const viewState = ref('init') // 'init', 'create', 'swiping', 'chat', 'chat_overview'
-const activeOrderIndex = ref(-1) 
+const activeOrderIndex = ref(-1)
 const myOrders = ref([])
-const currentCandidates = ref([]) 
+const currentCandidates = ref([])
 const activeChatPartner = ref(null)
-const swipeAnimation = ref('') 
+const swipeAnimation = ref('')
 
 const userProfile = reactive({
     name: 'Jan Kowalski',
-    address: 'ul. Witolda Budryka 4, 30-072 Kraków', 
+    address: 'ul. Witolda Budryka 4, 30-072 Kraków',
     phone: '+48 500 600 700',
     email: 'jan@firma.pl',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80'
@@ -23,9 +23,9 @@ const newOrder = reactive({
   category: 'IT',
   title: '',
   desc: '',
-  deadline: '', 
+  deadline: '',
   range: 50,
-  budgetLevel: 1 
+  budgetLevel: 1
 })
 
 // --- HELPERS ---
@@ -52,8 +52,8 @@ const getStarStyle = (index, rating) => {
 
 const loadCandidatesForOrder = (order) => {
     const matchedIds = order.matches.map(m => m.id)
-    return allCandidates.filter(c => 
-        (c.category === order.category || c.category === 'IT') && 
+    return allCandidates.filter(c =>
+        (c.category === order.category || c.category === 'IT') &&
         !matchedIds.includes(c.id)
     )
 }
@@ -61,11 +61,11 @@ const loadCandidatesForOrder = (order) => {
 // --- AKCJE ---
 const saveAndMatch = () => {
   if (!newOrder.title) return alert("Wpisz nazwę zlecenia!")
-  const orderData = { 
-    ...newOrder, 
+  const orderData = {
+    ...newOrder,
     id: Date.now(),
     displayBudget: budgetLabels[newOrder.budgetLevel],
-    matches: [] 
+    matches: []
   }
   myOrders.value.push(orderData)
   activeOrderIndex.value = myOrders.value.length - 1
@@ -76,12 +76,12 @@ const saveAndMatch = () => {
 const selectOrder = (index) => {
     activeOrderIndex.value = index
     if (myOrders.value[index].matches.length > 0) {
-        viewState.value = 'chat_overview' 
+        viewState.value = 'chat_overview'
     }
 }
 
 const resumeSwiping = (index, event) => {
-    if(event) event.stopPropagation(); 
+    if(event) event.stopPropagation();
     activeOrderIndex.value = index
     const order = myOrders.value[index]
     currentCandidates.value = loadCandidatesForOrder(order)
@@ -101,7 +101,7 @@ const swipe = (direction) => {
       }
       currentCandidates.value.shift()
       swipeAnimation.value = ''
-  }, 300) 
+  }, 300)
 }
 
 const openChat = (partner) => {
@@ -111,7 +111,7 @@ const openChat = (partner) => {
 
 const resetView = () => {
     viewState.value = 'create'
-    activeOrderIndex.value = -1 
+    activeOrderIndex.value = -1
     newOrder.title = ''
     newOrder.desc = ''
     newOrder.range = 50
@@ -121,7 +121,7 @@ const resetView = () => {
 
 <template>
   <div class="app-container">
-    
+
     <div class="sidebar">
       <div class="user-profile-section">
           <div class="profile-header">
@@ -135,12 +135,12 @@ const resetView = () => {
                   <button class="btn-small" @click="isEditingProfile = false">Zapisz</button>
               </div>
           </div>
-          
+
           <div v-if="!isEditingProfile" style="font-size: 12px; color: #555;">
               <p>📞 {{ userProfile.phone }}</p>
               <p>📍 {{ userProfile.address }}</p>
           </div>
-          
+
           <div v-else style="display: flex; flex-direction: column; gap: 5px;">
               <label style="font-size: 10px; color: #999;">Imię i Nazwisko</label>
               <input v-model="userProfile.name" class="input-clean" placeholder="Imię i nazwisko" style="font-size: 12px; padding: 5px;">
@@ -158,7 +158,7 @@ const resetView = () => {
       <div class="sidebar-header" style="height: 50px; font-size: 16px;">
         <span>Moje Zlecenia</span>
       </div>
-      
+
       <div class="sidebar-content">
         <button v-if="viewState !== 'create' && viewState !== 'init'" @click="resetView" class="btn-new-order">
           + Nowe Zlecenie
@@ -174,7 +174,7 @@ const resetView = () => {
                 <button class="btn-resume" @click="resumeSwiping(index, $event)" title="Szukaj dalej">🔍</button>
                 <div v-if="order.matches.length > 0" class="badge">{{ order.matches.length }}</div>
             </div>
-            
+
             <div v-if="activeOrderIndex === index" class="sub-match-list">
                 <div v-if="order.matches.length === 0" style="font-size: 11px; color: #999; padding: 5px;">
                     Brak par. Kliknij lupę 🔍 aby szukać.
@@ -190,7 +190,7 @@ const resetView = () => {
     </div>
 
     <div class="main-area">
-      
+
       <div v-if="viewState === 'init'" class="placeholder-box" @click="viewState = 'create'">
         <div style="font-size: 60px; color: #fd297b; margin-bottom: 20px;">+</div>
         <h2>Utwórz zlecenie</h2>
@@ -232,14 +232,14 @@ const resetView = () => {
       </div>
 
       <div v-if="viewState === 'swiping'" style="display:flex; flex-direction: column; align-items: center;">
-         <div v-if="currentCandidates.length > 0" 
-              class="tinder-card candidate-card" 
+         <div v-if="currentCandidates.length > 0"
+              class="tinder-card candidate-card"
               :class="swipeAnimation"
               :style="{ backgroundImage: `url(${currentCandidates[0].img})` }">
-            
+
             <div class="card-overlay">
                 <h2 style="margin: 0; font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
-                    {{ currentCandidates[0].name }}, 
+                    {{ currentCandidates[0].name }},
                     <span style="font-weight: 400; font-size: 24px;">{{ currentCandidates[0].years }} lat</span>
                 </h2>
                 <p style="margin: 5px 0 15px 0; font-size: 16px; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
@@ -255,7 +255,7 @@ const resetView = () => {
                 </div>
             </div>
          </div>
-         
+
          <div v-else class="tinder-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:#888;">
             <div style="font-size:50px; margin-bottom:20px;">🏁</div>
             <h2>To już wszyscy!</h2>
@@ -315,7 +315,7 @@ const getStarStyle = (index, rating) => {
 
     // Jeśli gwiazdka jest pusta
     if (fill === 0) return { color: 'rgba(255, 255, 255, 0.3)' }
-    
+
     // Jeśli gwiazdka jest pełna
     if (fill === 100) return { color: '#ffd700' }
 
@@ -340,17 +340,17 @@ const allCandidates = [
 
 // --- 2. STAN APLIKACJI ---
 const isEditingProfile = ref(false)
-const viewState = ref('init') 
-const activeOrderIndex = ref(-1) 
+const viewState = ref('init')
+const activeOrderIndex = ref(-1)
 const myOrders = ref([])
-const currentCandidates = ref([]) 
+const currentCandidates = ref([])
 const activeChatPartner = ref(null)
 // Nowa zmienna do sterowania animacją karty
-const swipeAnimation = ref('') 
+const swipeAnimation = ref('')
 
 const userProfile = reactive({
     name: 'Jan Kowalski',
-    address: 'ul. Witolda Budryka 4, 30-072 Kraków', 
+    address: 'ul. Witolda Budryka 4, 30-072 Kraków',
     phone: '+48 500 600 700',
     email: 'jan@firma.pl',
     avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80'
@@ -360,9 +360,9 @@ const newOrder = reactive({
   category: 'IT',
   title: '',
   desc: '',
-  deadline: '', 
+  deadline: '',
   range: 50,
-  budgetLevel: 1 
+  budgetLevel: 1
 })
 
 // --- 3. LOGIKA ---
@@ -373,19 +373,19 @@ const rangeLabel = computed(() => {
 
 const loadCandidatesForOrder = (order) => {
     const matchedIds = order.matches.map(m => m.id)
-    return allCandidates.filter(c => 
-        (c.category === order.category || c.category === 'IT') && 
+    return allCandidates.filter(c =>
+        (c.category === order.category || c.category === 'IT') &&
         !matchedIds.includes(c.id)
     )
 }
 
 const saveAndMatch = () => {
   if (!newOrder.title) return alert("Wpisz nazwę zlecenia!")
-  const orderData = { 
-    ...newOrder, 
+  const orderData = {
+    ...newOrder,
     id: Date.now(),
     displayBudget: budgetLabels[newOrder.budgetLevel],
-    matches: [] 
+    matches: []
   }
   myOrders.value.push(orderData)
   activeOrderIndex.value = myOrders.value.length - 1
@@ -396,12 +396,12 @@ const saveAndMatch = () => {
 const selectOrder = (index) => {
     activeOrderIndex.value = index
     if (myOrders.value[index].matches.length > 0) {
-        viewState.value = 'chat_overview' 
+        viewState.value = 'chat_overview'
     }
 }
 
 const resumeSwiping = (index, event) => {
-    if(event) event.stopPropagation(); 
+    if(event) event.stopPropagation();
     activeOrderIndex.value = index
     const order = myOrders.value[index]
     currentCandidates.value = loadCandidatesForOrder(order)
@@ -422,7 +422,7 @@ const swipe = (direction) => {
             myOrders.value[activeOrderIndex.value].matches.push(currentCandidates.value[0])
         }
       }
-      
+
       // Usuń kartę i zresetuj animację
       currentCandidates.value.shift()
       swipeAnimation.value = ''
@@ -433,7 +433,7 @@ const swipe = (direction) => {
              // viewState handled by template logic
         }, 100)
       }
-  }, 300) 
+  }, 300)
 }
 
 const openChat = (partner) => {
@@ -443,7 +443,7 @@ const openChat = (partner) => {
 
 const resetView = () => {
     viewState.value = 'create'
-    activeOrderIndex.value = -1 
+    activeOrderIndex.value = -1
     newOrder.title = ''
     newOrder.desc = ''
     newOrder.range = 50
@@ -453,7 +453,7 @@ const resetView = () => {
 
 <template>
   <div class="app-container">
-    
+
     <div class="sidebar">
       <div class="user-profile-section">
           <div class="profile-header">
@@ -474,16 +474,16 @@ const resetView = () => {
           <div v-else style="display: flex; flex-direction: column; gap: 5px;">
               <label style="font-size: 10px; color: #999;">Imię i Nazwisko</label>
               <input v-model="userProfile.name" class="input-clean" placeholder="Imię i nazwisko" style="font-size: 12px; padding: 5px;">
-              
+
               <label style="font-size: 10px; color: #999;">Email</label>
               <input v-model="userProfile.email" class="input-clean" placeholder="Email" style="font-size: 12px; padding: 5px;">
-              
+
               <label style="font-size: 10px; color: #999;">Telefon</label>
               <input v-model="userProfile.phone" class="input-clean" placeholder="Telefon" style="font-size: 12px; padding: 5px;">
-              
+
               <label style="font-size: 10px; color: #999;">Adres</label>
               <input v-model="userProfile.address" class="input-clean" placeholder="Adres" style="font-size: 12px; padding: 5px;">
-              
+
               <label style="font-size: 10px; color: #999;">Link do Avatara</label>
               <input v-model="userProfile.avatar" class="input-clean" placeholder="URL zdjęcia" style="font-size: 12px; padding: 5px;">
           </div>
@@ -492,7 +492,7 @@ const resetView = () => {
       <div class="sidebar-header" style="height: 50px; font-size: 16px;">
         <span>Moje Zlecenia</span>
       </div>
-      
+
       <div class="sidebar-content">
         <button v-if="viewState !== 'create' && viewState !== 'init'" @click="resetView" class="btn-new-order">
           + Nowe Zlecenie
@@ -508,7 +508,7 @@ const resetView = () => {
                 <button class="btn-resume" @click="resumeSwiping(index, $event)" title="Szukaj dalej">🔍</button>
                 <div v-if="order.matches.length > 0" class="badge">{{ order.matches.length }}</div>
             </div>
-            
+
             <div v-if="activeOrderIndex === index" class="sub-match-list">
                 <div v-if="order.matches.length === 0" style="font-size: 11px; color: #999; padding: 5px;">
                     Brak par. Kliknij lupę 🔍 aby szukać.
@@ -524,7 +524,7 @@ const resetView = () => {
     </div>
 
     <div class="main-area">
-      
+
       <div v-if="viewState === 'init'" class="placeholder-box" @click="viewState = 'create'">
         <div style="font-size: 60px; color: #fd297b; margin-bottom: 20px;">+</div>
         <h2>Utwórz zlecenie</h2>
@@ -557,7 +557,7 @@ const resetView = () => {
 
             <label class="label-mini" style="margin-top: 25px;">ZASIĘG: <strong style="color:#333">{{ rangeLabel }}</strong></label>
             <input type="range" v-model="newOrder.range" min="0" max="100" class="single-slider">
-            
+
             <label class="label-mini" style="margin-top: 25px;">TERMIN</label>
             <input type="date" v-model="newOrder.deadline" class="input-clean" style="font-family: sans-serif; color: #555;">
         </div>
@@ -567,22 +567,22 @@ const resetView = () => {
       </div>
 
       <div v-if="viewState === 'swiping'" style="display:flex; flex-direction: column; align-items: center;">
-         
-         <div v-if="currentCandidates.length > 0" 
-              class="tinder-card candidate-card" 
+
+         <div v-if="currentCandidates.length > 0"
+              class="tinder-card candidate-card"
               :class="swipeAnimation"
               :style="{ backgroundImage: `url(${currentCandidates[0].img})` }">
-            
+
             <div class="card-overlay">
                 <h2 style="margin: 0; font-size: 28px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
-                    {{ currentCandidates[0].name }}, 
+                    {{ currentCandidates[0].name }},
                     <span style="font-weight: 400; font-size: 24px;">{{ currentCandidates[0].years }} lat</span>
                 </h2>
-                
+
                 <p style="margin: 5px 0 15px 0; font-size: 16px; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
                     {{ currentCandidates[0].desc }}
                 </p>
-                
+
                 <div style="display: flex; gap: 10px;">
                     <span class="info-pill">
                         📍 {{ newOrder.range }} km
@@ -591,8 +591,8 @@ const resetView = () => {
                         {{ getBudgetSign(currentCandidates[0].priceLevel) }}
                     </span>
                     <div class="info-pill stars-pill">
-                      <span v-for="n in 5" :key="n" 
-                            class="star-icon" 
+                      <span v-for="n in 5" :key="n"
+                            class="star-icon"
                             :style="getStarStyle(n, currentCandidates[0].rating)">
                           ★
                       </span>
@@ -603,7 +603,7 @@ const resetView = () => {
                 </div>
             </div>
          </div>
-         
+
          <div v-else class="tinder-card" style="display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; color:#888;">
             <div style="font-size:50px; margin-bottom:20px;">🏁</div>
             <h2>To już wszyscy!</h2>
@@ -690,15 +690,15 @@ const resetView = () => {
 
 /* Style przycisków sterowania */
 .btn-control {
-    width: 70px; height: 70px; border-radius: 50%; border: none; background: white; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer; 
+    width: 70px; height: 70px; border-radius: 50%; border: none; background: white; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer;
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Sprężysty efekt */
 }
 .btn-control.nope { color: #ec5e6f; }
 .btn-control.like { color: #4caf50; }
 
 /* Efekt wychylania po najechaniu */
-.btn-control:hover { 
-    transform: scale(1.15); 
+.btn-control:hover {
+    transform: scale(1.15);
 }
 .btn-control.like:hover {
     box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);

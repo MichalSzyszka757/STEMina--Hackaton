@@ -25,9 +25,9 @@ def generuj_dane_dla_providera(liczba_rekordow=50):
         'Premium ($$$)': 2
     }
 
-    # --- ZMIANA: Zapisujemy do providerData.js ---
+    # --- ZMIANA: Zapisujemy do taskData.js ---
     # Zakładamy, że skrypt jest w folderze STEMina--Hackaton, więc wchodzimy do web/src/data
-    sciezka_js = os.path.join("data", "providerData.js")
+    sciezka_js = os.path.join("data", "taskData.js")
     
     dane_json = []
 
