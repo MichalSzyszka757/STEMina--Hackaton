@@ -1,14 +1,15 @@
 from typing import Literal, Union, Annotated
 from pydantic import Field
+from sqlalchemy import select
 
 from app.core.database import SessionDep
 from app.core import security
 
-from app.schemas.user import UserInDB, User, UserType
+from app.schemas.user import UserInDB, UserType
 from app.schemas.client import ClientCreate
 from app.schemas.provider import ProviderCreate
 
-from app.models import Client, Provider
+from app.models import Client, User, Provider
 
 
 # Nasza udawana baza
@@ -23,10 +24,10 @@ fake_users_db = {
     }
 }
 
-def get_user_by_username(username: str) -> UserInDB | None:
-    if username in fake_users_db:
-        return UserInDB(**fake_users_db[username])
-    return None
+def get_user_by_username(session: SessionDep, email_address: str) -> UserInDB | None:
+    statement = select(User).where(User.email_address == email_address)
+
+    return session.execute(statement).scalar_one_or_none()
 
 
 UserRegister = Annotated[Union[ClientCreate, ProviderCreate], Field(discriminator="role")]
