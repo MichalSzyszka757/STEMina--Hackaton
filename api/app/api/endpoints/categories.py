@@ -8,7 +8,7 @@ from typing import List, Annotated
 router = APIRouter()
 
 @router.get("/", response_model=List[CategoryResponse])
-def get_categories():
+def get_categories(db: SessionDep):
     return db.query(DbCategory)
 
 @router.post("/", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
