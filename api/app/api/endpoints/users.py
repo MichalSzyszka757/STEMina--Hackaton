@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from app.schemas.client import ClientCreate
 from app.schemas.provider import ProviderCreate
-from app.schemas.user import UserType
+from app.schemas.user import UserType, UserInDB
 from app.core.database import SessionDep
 from app.services import user_service
 from app.services.user_service import UserRegister
@@ -15,5 +15,5 @@ def get_users_specific_type(type: UserType):
     pass
 
 @router.post("/", status_code=201)
-def register_user(session: SessionDep, user_data: UserRegister) -> UserRegister:
+def register_user(session: SessionDep, user_data: UserRegister) -> UserInDB:
     return user_service.create_user(session, user_data)

@@ -8,8 +8,6 @@ class UserType(str, Enum):
 
 class UserBase(BaseModel):
     email_address: Optional[str] = EmailStr
-    #disabled: Optional[bool] = None
-    account_type: UserType
     city: str
 
 class UserCreate(UserBase):

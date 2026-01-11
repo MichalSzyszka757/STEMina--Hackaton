@@ -15,18 +15,17 @@ class Provider(User):
     """
     Model dostawcy usług (wykonawcy).
     """
-    name: Mapped[str] = mapped_column(String, index=True)
-    payment: Mapped[int] = mapped_column(Integer)
-    deadlines: Mapped[int] = mapped_column(Integer)
-    location: Mapped[str] = mapped_column(String)
-    starting_year: Mapped[int] = mapped_column(Integer)
-    owner: Mapped[str] = mapped_column(String)
-    description: Mapped[str] = mapped_column(String)
+    name: Mapped[str] = mapped_column(String, nullable=True)
+    payment: Mapped[int] = mapped_column(Integer, nullable=True)
+    deadlines: Mapped[int] = mapped_column(Integer, nullable=True)
+    location: Mapped[str] = mapped_column(String, nullable=True)
+    starting_year: Mapped[int] = mapped_column(Integer, nullable=True)
+    owner: Mapped[str] = mapped_column(String, nullable=True)
+    description: Mapped[str] = mapped_column(String, nullable=True)
 
-    specializations: Mapped[List[str]] = mapped_column(ARRAY(String))
+    specializations: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)
 
-    rating: Mapped[float] = mapped_column(Float, default=0.0)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    rating: Mapped[float] = mapped_column(Float, default=0.0, nullable=True)
 
     assigned_tasks = relationship("Task", back_populates="provider", foreign_keys="Task.provider_id")
 

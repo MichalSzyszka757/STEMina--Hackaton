@@ -9,7 +9,6 @@ class ProviderCreate(UserCreate):
     Rating i is_active są opcjonalne (mają domyślne wartości).
     """
     rating: Optional[float] = 0.0
-    is_active: Optional[bool] = True
     name: str
     payment: int
     deadlines: int  # Np. wskaźnik terminowości

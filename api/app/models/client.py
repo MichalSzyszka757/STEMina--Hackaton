@@ -9,9 +9,9 @@ class Client(User):
     Model klienta zlecającego zadania.
     """
     # Dane osobowe/kontaktowe zgodne z ClientBase
-    first_name: Mapped[str] = mapped_column(String, index=True)
-    last_name: Mapped[str] = mapped_column(String, index=True)
-    phone_number: Mapped[str] = mapped_column(String)
+    first_name: Mapped[str] = mapped_column(String, nullable=True)
+    last_name: Mapped[str] = mapped_column(String, nullable=True)
+    phone_number: Mapped[str] = mapped_column(String, nullable=True)
     profile_picture: Mapped[str] = mapped_column(String, nullable=True)
 
     # Relacja: Klient ma wiele zadań
