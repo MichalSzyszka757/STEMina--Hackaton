@@ -1,31 +1,38 @@
-from typing import List, Optional, Literal
+from typing import List, Optional
 from pydantic import BaseModel
+from uuid import UUID
 
-from app.schemas.user import UserCreate, UserResponse
 
-class ProviderCreate(UserCreate):
-    """
-    Schemat używany do tworzenia dostawcy (POST).
-    Rating i is_active są opcjonalne (mają domyślne wartości).
-    """
-    rating: Optional[float] = 0.0
+# --- Klasa Bazowa (Definicja pól) ---
+class ProviderBase(BaseModel):
     name: str
-    payment: int
-    deadlines: int  # Np. wskaźnik terminowości
+    description: str
     starting_year: int
     owner: str
-    description: str
-    specializations: List[str]  # Lista stringów, np. ["Hydraulik", "Elektryk"]
 
-    role: Literal["PROVIDER"]
+    # --- NOWE POLA DO MATCHINGU ---
+    # Enum: "BUDGET", "STANDARD", "PREMIUM"
+    price_tier: str
 
-class ProviderResponse(UserResponse):
-    """
-    Schemat zwracany przez API (odczyt).
-    """
-    id: int
+    # Enum: "week", "2week" - jak szybko provider to zrobi
+    lead_time: str
+
+    # Lokalizacja providera (do obliczania dystansu do klienta)
+    location: int
+
+    # ID kategorii głównej
+    specialization_id: UUID
+
+
+# --- Schemat do tworzenia (Input) ---
+class CreateProvider(ProviderBase):
+    rating: Optional[float] = 0.0
+
+
+# --- Schemat do odczytu (Output) ---
+class ProviderResponse(ProviderBase):
+    id: UUID
     rating: float
-    is_active: bool
 
     class Config:
         from_attributes = True
