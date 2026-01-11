@@ -1,8 +1,10 @@
 <script setup>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { allCandidates, budgetLabels } from '../data/mockData.js'
+import { useCategories } from '@/composables/useCategories.js'
 
 // --- KONFIGURACJA I STAN ---
+const existingCategories = ref([])
 const isEditingProfile = ref(false)
 const viewState = ref('init') // 'init', 'create', 'swiping', 'chat', 'chat_overview'
 const activeOrderIndex = ref(-1) 
@@ -117,6 +119,13 @@ const resetView = () => {
     newOrder.range = 50
     newOrder.budgetLevel = 1
 }
+
+const { data: categoryData, isLoading: categoryIsLoading, error: categoryError, fetchProducts } = useCategories();
+onMounted(() => {
+    fetchProducts();
+    existingCategories.value = categoryData
+})
+
 </script>
 
 <template>
@@ -201,10 +210,11 @@ const resetView = () => {
         <div class="tinder-card editable-card">
             <label class="label-mini">KATEGORIA</label>
             <select v-model="newOrder.category" class="input-clean">
-                <option value="IT">IT & Programowanie</option>
+                <option v-for="category in existingCategories" :key="category.id" :value="category.name">{{ category.name }}</option>
+                <!-- <option value="IT">IT & Programowanie</option>
                 <option value="Gastronomia">Gastronomia / Catering</option>
                 <option value="Budownictwo">Budownictwo / Remonty</option>
-                <option value="Marketing">Marketing</option>
+                <option value="Marketing">Marketing</option> -->
             </select>
             <input type="text" v-model="newOrder.title" class="input-title" placeholder="Czego potrzebujesz?">
             <textarea v-model="newOrder.desc" class="input-clean" rows="3" placeholder="Szczegóły..." style="resize: none;"></textarea>
