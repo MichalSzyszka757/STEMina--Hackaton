@@ -1,50 +1,93 @@
 <script setup>
-import { ref, reactive } from 'vue'
-
-// 1. IMPORT DANYCH Z PLIKU (To musi być ta ścieżka do wygenerowanego pliku)
-import { providerTasks as tasks } from '@/data/providerData.js'
+import { ref, reactive, onMounted } from 'vue'
 
 // --- STATE ---
 const isEditingProfile = ref(false)
 const viewState = ref('init') // 'init', 'edit_offer', 'swiping', 'chat'
-const currentJobStack = ref([]) // Zlecenia przefiltrowane do przeglądania
-const myMatches = ref([])       // Zaakceptowane
+const currentJobStack = ref([]) // Zlecenia pobrane z API
+const myMatches = ref([])       // Zaakceptowane zlecenia
 const activeChatPartner = ref(null)
 const swipeAnimation = ref('') 
+const isLoading = ref(false)
+const apiError = ref(null)
 
-// Profil Firmy
+// Profil Firmy (Providera)
 const providerProfile = reactive({
     name: 'Moja Firma Budowlana',
     email: 'biuro@firma1.pl',
     avatar: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=400&q=80',
-    
-    // --- WAŻNE: To musi pasować do nazw z generatora Python ---
     category: 'Budowlana', 
     years: 5,
     priceLevel: 1, // 1 = Standard
-    range: 50,     // Dajmy większy zasięg na start
-    availableFrom: new Date().toISOString().substr(0, 10) // Dzisiaj
+    range: 50,     // km
+    availableFrom: new Date().toISOString().substr(0, 10)
 })
 
-// --- LOGIKA ---
+// --- LOGIKA POŁĄCZENIA Z BACKENDEM ---
 
-// Funkcja szukająca zleceń (Filtrowanie danych)
-const searchForJobs = () => {
-    // FILTROWANIE:
-    const filtered = tasks.filter(job => {
-        const categoryMatch = job.category === providerProfile.category;
-        const rangeMatch = job.range <= providerProfile.range;
-        const dateMatch = job.date >= providerProfile.availableFrom;
-
-        return categoryMatch && rangeMatch && dateMatch;
-    });
-    
-    // Mieszamy wyniki i przypisujemy
-    currentJobStack.value = filtered.sort(() => Math.random() - 0.5);
-    
-    // Przełącz widok
-    viewState.value = 'swiping'
+// Funkcja pomocnicza: Obrazek dla kategorii (jeśli backend nie zwraca URL)
+const getCategoryImage = (categoryName) => {
+    return `https://source.unsplash.com/random/600x800/?${categoryName},job`
 }
+
+// Funkcja pomocnicza: Mapowanie budżetu (liczba z backendu -> poziom $, $$, $$$)
+const mapBudgetToLevel = (budget) => {
+    if (!budget) return 1;
+    if (budget < 1000) return 0; // Budget
+    if (budget < 5000) return 1; // Standard
+    return 2; // Premium
+}
+
+const fetchAndFilterJobs = async () => {
+    isLoading.value = true;
+    apiError.value = null;
+    try {
+        // 1. POBIERANIE: To zapytanie idzie przez nasze Proxy do Pythona
+        const response = await fetch('/api/v1/tasks'); 
+        
+        if (!response.ok) {
+            throw new Error(`Błąd API: ${response.status}`);
+        }
+
+        const backendTasks = await response.json();
+
+        // 2. MAPOWANIE: Dostosowanie danych z Pythona do Twojego wyglądu
+        const mappedTasks = backendTasks.map(task => ({
+            id: task.id,
+            // Jeśli backend nie ma tytułu, tworzymy go dynamicznie
+            title: task.title || `${task.category?.name || 'Zlecenie'} #${task.id}`,
+            category: task.category?.name || 'Inne',
+            desc: task.description || 'Brak opisu zlecenia.',
+            budgetLevel: mapBudgetToLevel(task.budget), 
+            range: task.distance || Math.floor(Math.random() * 40) + 5, // Mock dystansu
+            date: task.due_date ? task.due_date.split('T')[0] : '2026-05-20',
+            img: getCategoryImage(task.category?.name || 'work')
+        }));
+
+        // 3. FILTROWANIE: Dopasowanie do profilu firmy
+        const filtered = mappedTasks.filter(job => {
+            const cat1 = (job.category || '').toLowerCase();
+            const cat2 = (providerProfile.category || '').toLowerCase();
+            // Luźne dopasowanie kategorii
+            const categoryMatch = cat1.includes(cat2) || cat2.includes(cat1);
+            const rangeMatch = job.range <= providerProfile.range;
+            const dateMatch = job.date >= providerProfile.availableFrom;
+
+            return categoryMatch && rangeMatch && dateMatch;
+        });
+
+        currentJobStack.value = filtered.sort(() => Math.random() - 0.5);
+        viewState.value = 'swiping';
+
+    } catch (error) {
+        console.error("Błąd:", error);
+        apiError.value = "Nie udało się pobrać zleceń. Upewnij się, że backend działa.";
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+// --- POZOSTAŁE FUNKCJE UI ---
 
 const swipe = (direction) => {
     if (currentJobStack.value.length === 0) return
@@ -67,7 +110,6 @@ const getBudgetSign = (level) => {
     return '$$$'
 }
 
-// --- HELPERS ---
 const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'chat' }
 </script>
 
@@ -95,12 +137,9 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
                   <option>Budowlana</option>
                   <option>Hydrauliczna</option>
                   <option>Elektryczna</option>
-                  <option>IT i Grafika</option>
+                  <option>IT</option>
                   <option>Sprzątająca</option>
-                  <option>Florystyczna</option>
-                  <option>Transport i Przeprowadzki</option>
-                  <option>Motoryzacyjna</option>
-                  <option>Ogrody i Tereny Zielone</option>
+                  <option>Ogrody</option>
               </select>
               
               <label class="label-mini">Lata na rynku</label>
@@ -115,8 +154,8 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
           </div>
       </div>
 
-      <div class="sidebar-header" style="height: 50px; font-size: 16px;">
-        <span>Moje Zlecenia</span>
+      <div class="sidebar-header">
+        <span>Moje Zlecenia (Matche)</span>
       </div>
       
       <div class="sidebar-content">
@@ -150,8 +189,14 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
           <input type="range" v-model="providerProfile.range" min="0" max="100" class="single-slider">
           <div style="text-align:right; font-size:12px; color:#888;">{{ providerProfile.range }} km</div>
 
+          <div v-if="apiError" style="color: red; font-size: 12px; margin-top: 15px; text-align: center; background: #fff0f0; padding: 10px; border-radius: 8px;">
+              ⚠️ {{ apiError }}
+          </div>
+
           <div class="action-area" style="margin-top:auto;">
-              <button class="btn-main" @click="searchForJobs">Szukaj Zleceń 🔍</button>
+              <button class="btn-main" @click="fetchAndFilterJobs" :disabled="isLoading">
+                  {{ isLoading ? 'Łączenie z bazą...' : 'Szukaj Zleceń 🔍' }}
+              </button>
           </div>
       </div>
 
@@ -174,9 +219,15 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
           </div>
           
           <div v-else class="tinder-card" style="justify-content:center; align-items:center; color:#999; padding: 20px; text-align:center;">
-              <h2>Brak pasujących zleceń 😔</h2>
-              <p>Spróbuj zwiększyć zasięg (km), zmienić datę lub kategorię.</p>
-              <button class="btn-outline" @click="viewState='edit_offer'">Zmień kryteria</button>
+              <div v-if="!isLoading">
+                  <div style="font-size: 40px; margin-bottom: 10px;">🏁</div>
+                  <h2>Brak pasujących zleceń</h2>
+                  <p>Brak zleceń w bazie dla Twoich kryteriów.</p>
+                  <button class="btn-outline" @click="viewState='edit_offer'">Zmień kryteria</button>
+              </div>
+              <div v-else>
+                  <h2>Ładowanie...</h2>
+              </div>
           </div>
           
           <div v-if="currentJobStack.length > 0" style="display:flex; gap:20px; margin-top:20px;">
@@ -196,7 +247,7 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
 
          <div class="chat-body">
              <div class="chat-bubble received">
-                 Cześć! Jesteśmy zainteresowani Twoim zleceniem.
+                 Cześć! Jesteśmy zainteresowani tym zleceniem. Kiedy możemy omówić szczegóły?
              </div>
          </div>
 
@@ -210,12 +261,43 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
 </template>
 
 <style scoped>
-/* --- STYLIZACJA CHATU (ZGODNA Z DASHBOARDVIEW) --- */
+/* --- STYLIZACJA KARTY --- */
+.candidate-card {
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    color: white;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
 
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%);
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+.info-pill {
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(5px);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.price-pill { color: #ffd700; border-color: rgba(255, 215, 0, 0.4); }
+
+/* --- STYLIZACJA CHATU (ZE ZDJĘCIA) --- */
 .chat-window {
     width: 100%;
-    max-width: 600px; /* Szerokość jak na zdjęciu */
-    height: 70vh; /* Wysokość okna */
+    max-width: 600px; /* Szerokość jak na screenshocie */
+    height: 70vh;
     background: white;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
@@ -238,24 +320,19 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
     height: 40px; 
     border-radius: 50%; 
     background-size: cover; 
-    background-position: center;
-    margin-right: 15px;
+    margin-right: 15px; 
     border: 1px solid #eee;
 }
 
 .chat-close-btn {
-    border: none; 
-    background: none; 
-    font-size: 20px; 
-    cursor: pointer;
-    color: #999;
+    border: none; background: none; font-size: 20px; cursor: pointer; color: #999;
 }
 .chat-close-btn:hover { color: #333; }
 
 .chat-body {
     flex: 1;
     padding: 20px;
-    background: #f9f9f9; /* Delikatne tło */
+    background: #f9f9f9;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -278,7 +355,7 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
 }
 
 .chat-input-area {
-    padding: 15px;
+    padding: 20px;
     border-top: 1px solid #eee;
     background: white;
 }
@@ -289,19 +366,24 @@ const openChat = (job) => { activeChatPartner.value = job; viewState.value = 'ch
     padding: 12px 20px;
     border-radius: 30px;
     outline: none;
-    font-family: inherit;
     transition: 0.3s;
-    box-sizing: border-box; /* Ważne żeby padding nie rozpychał */
+    box-sizing: border-box;
+    font-family: inherit;
 }
-.chat-input:focus {
-    border-color: #fd297b;
-}
+.chat-input:focus { border-color: #fd297b; }
 
-@keyframes popIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
+@keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-/* --- POZOSTAŁE STYLE (BEZ ZMIAN) --- */
-.msg { background:white; padding:10px; border-radius:10px; width:fit-content; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+/* --- BUTTONY STEROWANIA (Like/Nope) --- */
+.btn-control {
+    width: 70px; height: 70px; border-radius: 50%; border: none; background: white; font-size: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer; 
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn-control.nope { color: #ec5e6f; }
+.btn-control.like { color: #4caf50; }
+.btn-control:hover { transform: scale(1.15); }
+
+/* Inne */
+.fly-right { transform: translateX(120%) rotate(20deg) !important; opacity: 0; }
+.fly-left { transform: translateX(-120%) rotate(-20deg) !important; opacity: 0; }
 </style>
