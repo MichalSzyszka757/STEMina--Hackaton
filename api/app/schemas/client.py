@@ -1,25 +1,21 @@
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, EmailStr
 
-class ClientBase(BaseModel):
-    """
-    Bazowy schemat klienta ze wspólnymi polami.
-    """
-    first_name: str
-    last_name: str
-    email: EmailStr  # Automatyczna walidacja formatu email
-    phone_number: str
-    address: str
-    profile_picture: Optional[str] = None
+from app.schemas.user import UserCreate, UserResponse
 
-class ClientCreate(ClientBase):
+
+class ClientCreate(UserCreate):
     """
     Schemat używany przy tworzeniu nowego klienta (POST).
     Dziedziczy wszystkie pola z ClientBase.
     """
-    pass
+    first_name: str
+    last_name: str
+    phone_number: str
+    profile_picture: Optional[str] = None
+    role: Literal["CLIENT"]
 
-class ClientResponse(ClientBase):
+class ClientResponse(UserResponse):
     """
     Schemat zwracany przez API (odczyt).
     Zawiera ID nadane przez bazę danych.

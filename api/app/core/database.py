@@ -1,6 +1,8 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+from fastapi import Depends
+from typing import Annotated
 
 # Pobieramy adres bazy danych. Domyślna wartość ustawiona na localhost (dla Podmana/Dockera)
 # "postgresql://user:password@localhost:5432/mydatabase"
@@ -29,3 +31,5 @@ def get_db():
     finally:
         # Zawsze zamykaj sesję, nawet w przypadku błędu
         db.close()
+
+SessionDep = Annotated[SessionLocal, Depends(get_db)]
