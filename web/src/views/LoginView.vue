@@ -1,18 +1,20 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAuth } from '@/composables/useAuth';
 
 const router = useRouter()
-const username = ref('')
-const password = ref('')
-const error = ref('')
 
-const handleLogin = () => {
-    if (username.value === 'admin' && password.value === 'admin') {
-        router.push('/dashboard')
-    } else {
-        error.value = "Nieprawidłowy login lub hasło (spróbuj admin/admin)"
-    }
+// Dane formularza
+const username = ref('');
+const password = ref('');
+
+// Pobieramy logikę z composable
+const { login, isLoading, error } = useAuth();
+
+const handleLogin = async () => {
+  // Wywołujemy akcję - walidacja i przekierowanie dzieją się wewnątrz useAuth
+  await login(username.value, password.value);
 }
 </script>
 
@@ -22,7 +24,7 @@ const handleLogin = () => {
       <div style="font-size: 40px; color: #fd297b; margin-bottom: 10px;">🔥</div>
       <h2 style="margin: 0 0 20px 0;">Matchmaker B2B</h2>
       
-      <div style="text-align: left;">
+      <form style="text-align: left;" @submit.prevent="handleLogin">
           <input 
             v-model="username" 
             class="input-clean" 
@@ -38,9 +40,10 @@ const handleLogin = () => {
             style="margin-bottom: 25px; border-bottom: 1px solid #ddd;"
             @keyup.enter="handleLogin"
           >
-      </div>
+          <button type="submit" class="btn-main">Zaloguj się</button>
+        </form>
 
-      <button class="btn-main" @click="handleLogin">Zaloguj się</button>
+      
       
       <p v-if="error" style="color: red; font-size: 13px; margin-top: 15px;">{{ error }}</p>
       <p style="color: #999; font-size: 12px; margin-top: 20px;">Nie masz konta? Zarejestruj się</p>
