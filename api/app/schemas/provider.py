@@ -12,7 +12,6 @@ class ProviderCreate(UserCreate):
     name: str
     payment: int
     deadlines: int  # Np. wskaźnik terminowości
-    location: str   # Odpowiednik pola distance z modelu (lokalizacja)
     starting_year: int
     owner: str
     description: str

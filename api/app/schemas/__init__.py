@@ -5,4 +5,4 @@ from .client import ClientCreate, ClientResponse
 from .provider import ProviderCreate, ProviderResponse
 
 # Schematy taska
-from .task import CreateTask, TaskResponse
+from .task import TaskCreate, TaskResponse

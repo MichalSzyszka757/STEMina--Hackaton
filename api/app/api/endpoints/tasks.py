@@ -5,41 +5,12 @@ from pydantic import BaseModel
 from enum import Enum
 from datetime import datetime
 
+from app.schemas.task import TaskBase, TaskResponse
 from app.schemas.user import User
 from app.core.auth import get_current_user
 
-class TaskStatus(str, Enum):
-    OPEN = "OPEN"           # Czeka na wykonawcę
-    ASSIGNED = "ASSIGNED"   # Wykonawca przypisany
-    COMPLETED = "COMPLETED" # Zakończone
-
-class TaskBudget(str, Enum):
-    BUDGET = "BUDGET"
-    STANDARD = "STANDARD"
-
-class TaskBase(BaseModel):
-    category: str        # np. "IT", "Hydraulik" - to musi pasować do usług providera
-    title: str
-    details: str
-    budget: TaskBudget
-    distance: int
-    deadline: datetime
-
-class TaskCreate(TaskBase):
-    client_id: UUID      # Kto zleca
-
-class Task(TaskBase):
-    id: UUID
-    client_id: UUID
-    provider_id: Optional[UUID] = None # Kto wykonuje (puste na początku)
-    status: TaskStatus = TaskStatus.OPEN
-
 router = APIRouter()
 
-# @router.get("/")
-# def get_tasks():
-    
-#     return [Task(id=uuid4(), test_field=1, test_field2=2), Task(id=uuid4(), test_field=2, test_field2=3)]
 @router.post("/", response_model=User, status_code=status.HTTP_201_CREATED)
 def read_user_me(
     task: TaskBase,
@@ -52,7 +23,7 @@ def read_user_me(
 #def create_task(task: TaskBase):
 #    return task
 
-@router.get("/{task_id}", response_model=Task)
+@router.get("/{task_id}", response_model=TaskResponse)
 def get_task(task_id: UUID):
     #client = next((c for c in clients_db if c.id == client_id), None)
     #if not client:

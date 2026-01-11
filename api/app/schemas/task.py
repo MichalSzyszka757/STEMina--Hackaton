@@ -12,7 +12,7 @@ class TaskBase(BaseModel):
     deadline: datetime
 
 # Schemat służący do tworzenia nowego zadania (mutowalny)
-class CreateTask(TaskBase):
+class TaskCreate(TaskBase):
     # Musimy wiedzieć, który klient tworzy zadanie
     client_id: int
     # Status domyślnie ustawia się na "OPEN" w bazie, więc tu jest pominięty
