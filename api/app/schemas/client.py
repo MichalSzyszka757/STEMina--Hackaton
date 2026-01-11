@@ -2,13 +2,13 @@ from typing import Optional, Literal
 from pydantic import BaseModel, EmailStr
 from uuid import UUID
 
+from app.schemas.user import UserBase
 
-class ClientBase(BaseModel):
+
+class ClientBase(UserBase):
     first_name: str
     last_name: str
-    email: EmailStr
     phone_number: str
-    address: str
     profile_picture: Optional[str] = None
 
 

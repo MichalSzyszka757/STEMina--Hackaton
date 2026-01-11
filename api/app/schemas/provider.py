@@ -2,9 +2,10 @@ from typing import List, Optional, Literal
 from pydantic import BaseModel
 from uuid import UUID
 from app.models.enums import PriceTier, LeadTime
+from app.schemas.user import UserBase
 
 
-class ProviderBase(BaseModel):
+class ProviderBase(UserBase):
     """
     Pola wspólne dla dostawcy.
     """
@@ -16,7 +17,6 @@ class ProviderBase(BaseModel):
     # POLA DO MATCHINGU
     price_tier: PriceTier
     lead_time: LeadTime
-    location: int
 
     specialization_id: UUID
 
