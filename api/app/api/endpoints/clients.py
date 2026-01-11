@@ -17,7 +17,7 @@ class ClientBase(BaseModel):
     address: str
     profile_picture: str = None
 
-# class ClientCreate(ClientBase):
+# class CreateClient(ClientBase):
 #     provider_id: Optional[UUID] = None  # Opcjonalne przypisanie do usługodawcy
 
 class Client(ClientBase):

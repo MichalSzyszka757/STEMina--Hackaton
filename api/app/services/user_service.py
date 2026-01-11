@@ -6,10 +6,18 @@ from app.core.database import SessionDep
 from app.core import security
 
 from app.schemas.user import UserInDB, UserType
-from app.schemas.client import ClientCreate
-from app.schemas.provider import ProviderCreate
+from app.schemas.client import CreateClient
+from app.schemas.provider import CreateProvider
 
 from app.models import Client, User, Provider
+
+from typing import Annotated, Union
+from pydantic import Field
+from app.schemas.client import CreateClient
+from app.schemas.provider import CreateProvider
+
+# Pydantic używa pola 'role' z powyższych klas, aby rozróżnić typ
+UserRegister = Annotated[Union[CreateClient, CreateProvider], Field(discriminator="role")]
 
 
 # Nasza udawana baza
@@ -30,15 +38,15 @@ def get_user_by_username(session: SessionDep, email_address: str) -> UserInDB | 
     return session.execute(statement).scalar_one_or_none()
 
 
-UserRegister = Annotated[Union[ClientCreate, ProviderCreate], Field(discriminator="role")]
+UserRegister = Annotated[Union[CreateClient, CreateProvider], Field(discriminator="role")]
 
 def create_user(session: SessionDep, user_data: UserRegister) -> UserInDB | None:
     
     obj_data = user_data.model_dump(exclude={'password', 'account_type'})
 
-    if isinstance(user_data, ClientCreate):
+    if isinstance(user_data, CreateClient):
         db_obj = Client(**obj_data, hashed_password=security.get_password_hash(user_data.password))
-    elif isinstance(user_data, ProviderCreate):
+    elif isinstance(user_data, CreateProvider):
         db_obj = Provider(**obj_data, hashed_password=security.get_password_hash(user_data.password))
 
     session.add(db_obj)

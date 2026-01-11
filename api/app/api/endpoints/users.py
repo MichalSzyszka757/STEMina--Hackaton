@@ -1,11 +1,13 @@
 from fastapi import APIRouter
-from app.schemas.client import ClientCreate
-from app.schemas.provider import ProviderCreate
+from app.schemas.client import CreateClient
+from app.schemas.provider import CreateProvider
 from app.schemas.user import UserType, UserInDB
 from app.core.database import SessionDep
 from app.services import user_service
 from app.services.user_service import UserRegister
 
+from app.schemas.client import CreateClient    # <--- Zmiana nazwy
+from app.schemas.provider import CreateProvider # <--- Zmiana nazwy
 router = APIRouter()
 
 db_session = None

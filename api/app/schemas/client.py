@@ -1,27 +1,29 @@
 from typing import Optional, Literal
 from pydantic import BaseModel, EmailStr
+from uuid import UUID
 
-from app.schemas.user import UserCreate, UserResponse
 
-
-class ClientCreate(UserCreate):
-    """
-    Schemat używany przy tworzeniu nowego klienta (POST).
-    Dziedziczy wszystkie pola z ClientBase.
-    """
+class ClientBase(BaseModel):
     first_name: str
     last_name: str
+    email: EmailStr
     phone_number: str
+    address: str
     profile_picture: Optional[str] = None
-    role: Literal["CLIENT"]
 
-class ClientResponse(UserResponse):
-    """
-    Schemat zwracany przez API (odczyt).
-    Zawiera ID nadane przez bazę danych.
-    """
-    id: int
+
+class CreateClient(ClientBase):
+    password: str
+
+    # --- TO POLE JEST KLUCZOWE ---
+    role: Literal["CLIENT"] = "CLIENT"
+
+
+class ClientResponse(ClientBase):
+    id: UUID
+    is_active: bool = True
+
+    role: Literal["CLIENT"] = "CLIENT"
 
     class Config:
-        # Pozwala Pydanticowi czytać dane bezpośrednio z obiektów SQLAlchemy (ORM)
         from_attributes = True
