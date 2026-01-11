@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from enum import Enum
 
@@ -7,14 +7,16 @@ class UserType(str, Enum):
     provider = "PROVIDER"
 
 class UserBase(BaseModel):
-    username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
-    disabled: Optional[bool] = None
+    email_address: Optional[str] = EmailStr
+    #disabled: Optional[bool] = None
     account_type: UserType
+    city: str
 
 class UserCreate(UserBase):
     password: str
+
+class UserResponse(UserBase):
+    pass
 
 class User(UserBase):
     class Config:

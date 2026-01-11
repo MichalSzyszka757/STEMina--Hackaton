@@ -1,9 +1,9 @@
 from typing import List, Optional, Literal
 from pydantic import BaseModel
 
-from app.schemas.user import UserBase
+from app.schemas.user import UserCreate, UserResponse
 
-class ProviderCreate(UserBase):
+class ProviderCreate(UserCreate):
     """
     Schemat używany do tworzenia dostawcy (POST).
     Rating i is_active są opcjonalne (mają domyślne wartości).
@@ -21,7 +21,7 @@ class ProviderCreate(UserBase):
 
     role: Literal["PROVIDER"]
 
-class ProviderResponse(UserBase):
+class ProviderResponse(UserResponse):
     """
     Schemat zwracany przez API (odczyt).
     """

@@ -28,7 +28,7 @@ class Provider(User):
     rating: Mapped[float] = mapped_column(Float, default=0.0)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
-    assigned_tasks = relationship("Task", back_populates="provider")
+    assigned_tasks = relationship("Task", back_populates="provider", foreign_keys="Task.provider_id")
 
     # Relacja kandydatów używa teraz importu z task.py
     applied_tasks = relationship(

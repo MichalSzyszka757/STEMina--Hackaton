@@ -11,14 +11,12 @@ class Client(User):
     # Dane osobowe/kontaktowe zgodne z ClientBase
     first_name: Mapped[str] = mapped_column(String, index=True)
     last_name: Mapped[str] = mapped_column(String, index=True)
-    email: Mapped[str] = mapped_column(String, unique=True, index=True)
     phone_number: Mapped[str] = mapped_column(String)
-    address: Mapped[str] = mapped_column(String)
     profile_picture: Mapped[str] = mapped_column(String, nullable=True)
 
     # Relacja: Klient ma wiele zadań
     # Używamy stringa "Task" aby uniknąć importu pliku task.py tutaj
-    tasks = relationship("Task", back_populates="client", cascade="all, delete-orphan")
+    tasks = relationship("Task", back_populates="client", cascade="all, delete-orphan", foreign_keys="Task.client_id")
 
     __mapper_args__ = {
         "polymorphic_identity": UserRole.CLIENT

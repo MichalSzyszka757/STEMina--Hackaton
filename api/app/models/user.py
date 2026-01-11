@@ -3,6 +3,7 @@ from typing import List, Optional
 from uuid import UUID, uuid4
 from sqlalchemy import String, ForeignKey, Enum as SqlEnum
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from uuid import UUID
 
 from app.core.database import Base
 
