@@ -7,13 +7,15 @@ const username = ref('')
 const password = ref('')
 const error = ref('')
 
-const handleLogin = () => {
+const handleLogin = async () => {
     if (username.value === 'admin' && password.value === 'admin') {
         router.push('/dashboard')
+    } else if (username.value === 'firma1' && password.value === 'firma1') {
+        router.push('/provider')
     } else {
-        error.value = "Nieprawidłowy login lub hasło (spróbuj admin/admin)"
+        error.value = "Nieprawidłowy login lub hasło (admin/admin lub firma1/firma1)"
     }
-}
+  }
 </script>
 
 <template>
