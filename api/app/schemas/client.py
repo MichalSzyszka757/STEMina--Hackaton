@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import BaseModel, EmailStr
 
 from app.schemas.user import UserBase
@@ -15,6 +15,8 @@ class ClientCreate(UserBase):
     phone_number: str
     address: str
     profile_picture: Optional[str] = None
+
+    role: Literal["CLIENT"]
 
 class ClientResponse(UserBase):
     """

@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Literal
 from pydantic import BaseModel
 
 from app.schemas.user import UserBase
@@ -18,6 +18,8 @@ class ProviderCreate(UserBase):
     owner: str
     description: str
     specializations: List[str]  # Lista stringów, np. ["Hydraulik", "Elektryk"]
+
+    role: Literal["PROVIDER"]
 
 class ProviderResponse(UserBase):
     """
